@@ -1,7 +1,8 @@
 from datetime import datetime
 
+
 class Task:
-    def __init__(self:str, name:str, description, tags=None):
+    def __init__(self: str, name: str, description, tags=None):
         self.name = name
         self.description = description
         self.created_at = datetime.now()
@@ -34,3 +35,22 @@ class Task:
     def __str__(self):
         return f"{self.name} - {self.description} (Completed: {self.completed})"
 
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "created_at": self.created_at,
+            "completed": self.completed,
+            "last_modified": self.last_modified,
+            "completion_date": self.completion_date,
+            "tags": self.tags
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        task = cls(data["name"], data["description"], data.get("tags", []))
+        task.created_at = data["created_at"]
+        task.completed = data["completed"]
+        task.last_modified = data["last_modified"]
+        task.completion_date = data["completion_date"]
+        return task
