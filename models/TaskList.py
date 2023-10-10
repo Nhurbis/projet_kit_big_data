@@ -1,24 +1,31 @@
 class TaskList:
     """
     A class to manage a list of Task objects.
+    
+    :ivar tasks: A dictionary to hold Task objects.
     """
+
     def __init__(self):
         """
         Initializes an empty dictionary to hold Task objects.
+        
+        :returns: None
         """
         self.tasks = {}
 
     def add_task(self, name, description, tags=None):
         """
         Adds a new task to the task list.
-
-        Args:
-            name: The name of the task.
-            description: The description of the task.
-            tags: A list of tags for the task. Defaults to None.
-
-        Returns:
-            A message indicating success or failure.
+        
+        :param name: The name of the task.
+        :type name: str
+        :param description: The description of the task.
+        :type description: str
+        :param tags: A list of tags for the task. Defaults to None.
+        :type tags: list, optional
+        
+        :returns: A message indicating success or failure.
+        :rtype: str
         """
         if name in self.tasks:
             return "Cette tâche existe déjà."
@@ -28,12 +35,12 @@ class TaskList:
     def complete_task(self, name):
         """
         Marks a task as complete.
-
-        Args:
-            name: The name of the task to complete.
-
-        Returns:
-            A message indicating success or failure.
+        
+        :param name: The name of the task to complete.
+        :type name: str
+        
+        :returns: A message indicating success or failure.
+        :rtype: str
         """
         if name not in self.tasks:
             return "Cette tâche n'existe pas."
@@ -43,12 +50,12 @@ class TaskList:
     def remove_task(self, name):
         """
         Removes a task from the task list.
-
-        Args:
-            name: The name of the task to remove.
-
-        Returns:
-            A message indicating success or failure.
+        
+        :param name: The name of the task to remove.
+        :type name: str
+        
+        :returns: A message indicating success or failure.
+        :rtype: str
         """
         if name not in self.tasks:
             return "Cette tâche n'existe pas."
@@ -58,6 +65,8 @@ class TaskList:
     def display_tasks(self):
         """
         Displays all tasks in the task list.
+        
+        :returns: None
         """
         if not self.tasks:
             print("Aucune tâche à afficher.")
