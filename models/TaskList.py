@@ -3,11 +3,11 @@ class TaskList:
     def __init__(self):
         self.tasks = {}
 
-    def add_task(self, name, description):
+    def add_task(self, name, description, tags=None):
         if name in self.tasks:
             print("Cette tâche existe déjà.")
             return
-        self.tasks[name] = Task(name, description)
+        self.tasks[name] = Task(name, description, tags)
 
     def complete_task(self, name):
         if name not in self.tasks:
