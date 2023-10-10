@@ -1,3 +1,7 @@
+from todolist.config.db_config import db
+from datetime import datetime
+from todolist.models.Task import Task
+
 class TaskList:
     """
     A class to manage a list of Task objects.
@@ -27,10 +31,11 @@ class TaskList:
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if name in self.tasks:
-            return "Cette tâche existe déjà."
-        self.tasks[name] = Task(name, description, tags)
-        return "Tâche ajoutée avec succès."
+        if self.collection.find_one({"name": name}):
+            print("Cette tâche existe déjà.")
+            return
+        task = Task(name, description, tags)
+        self.collection.insert_one(task.to_dict())
 
     def complete_task(self, name):
         """
@@ -42,10 +47,11 @@ class TaskList:
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if name not in self.tasks:
-            return "Cette tâche n'existe pas."
-        self.tasks[name].mark_completed()
-        return "Tâche marquée comme complétée."
+        if not self.collection.find_one({"name": name}):
+            print("Cette tâche n'existe pas.")
+            return
+        self.collection.update_one(
+            {"name": name}, {"$set": {"completed": True, "completion_date": datetime.now()}})
 
     def remove_task(self, name):
         """
@@ -57,10 +63,10 @@ class TaskList:
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if name not in self.tasks:
-            return "Cette tâche n'existe pas."
-        del self.tasks[name]
-        return "Tâche supprimée avec succès."
+        if not self.collection.find_one({"name": name}):
+            print("Cette tâche n'existe pas.")
+            return
+        self.collection.delete_one({"name": name})
 
     def display_tasks(self):
         """
@@ -68,8 +74,10 @@ class TaskList:
         
         :returns: None
         """
-        if not self.tasks:
+        tasks = self.collection.find()
+        if not tasks:
             print("Aucune tâche à afficher.")
             return
-        for name, task in self.tasks.items():
+        for task_data in tasks:
+            task = Task.from_dict(task_data)
             print(task)
