@@ -6,10 +6,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Run PEP8
-      uses: quentinguidee/pep8-action@v2.0.13-dev
-      with:
-        arguments: '--max-line-length=120'
+    - name: autopep8
+      uses: peter-evans/autopep8@v2.0.0
+            
