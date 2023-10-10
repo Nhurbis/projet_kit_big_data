@@ -1,25 +1,13 @@
-class Task:
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
-        self.completed = False
-
-    def mark_completed(self):
-        self.completed = True
-
-    def __str__(self):
-        return f"{self.name} - {self.description} (Completed: {self.completed})"
-
 
 class TaskList:
     def __init__(self):
         self.tasks = {}
 
-    def add_task(self, name, description):
+    def add_task(self, name, description, tags=None):
         if name in self.tasks:
             print("Cette tâche existe déjà.")
             return
-        self.tasks[name] = Task(name, description)
+        self.tasks[name] = Task(name, description, tags)
 
     def complete_task(self, name):
         if name not in self.tasks:
