@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 datetime = "^5.2"
+pymongo = "^4.5.0"
 
 
 [build-system]
