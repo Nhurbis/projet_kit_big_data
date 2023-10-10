@@ -1,12 +1,14 @@
-name: Pep8 with push
+name: PEP8 Formatting Check
+
 on: [push]
+
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@master
-      with:
-        ref: ${{ github.event.pull_request.head.sha }}
-    - name: 'Run PEP8'
-    - uses: quentinguidee/pep8-action@v1
-      with:
-        arguments: '--max-line-length=120'
+  formatting-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install pycodestyle
+      - name: Run PEP8 check
+        run: pycodestyle --max-line-length=120 .
