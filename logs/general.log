@@ -1,0 +1,6 @@
+2023-10-11 14:30:20,971 - general_logger - INFO - Ajout d'une nouvelle tâche : Faire les courses
+2023-10-11 14:30:20,986 - general_logger - INFO - Affichage d'une liste de tâches.
+2023-10-11 14:30:20,999 - general_logger - INFO - Complétion d'une tâche : Faire les courses
+2023-10-11 14:30:21,025 - general_logger - INFO - Affichage d'une liste de tâches.
+2023-10-11 14:30:21,040 - general_logger - INFO - Suppression d'une tâche : Faire les courses
+2023-10-11 14:30:21,052 - general_logger - INFO - Affichage d'une liste de tâches.
