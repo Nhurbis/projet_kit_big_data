@@ -1,0 +1,14 @@
+name: PEP8 Formatting Check
+
+on: [push]
+
+jobs:
+  formatting-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install pycodestyle
+      - name: Run PEP8 check
+        run: pycodestyle --first kitbgd.py
