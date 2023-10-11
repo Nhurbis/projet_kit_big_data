@@ -1,7 +1,7 @@
 from datetime import datetime
 from todolist.config.db_config import db
 from todolist.models.Task import Task
-from todolist.utils.Loggers import debug_logger, general_logger
+from todolist.utils.loggers import debug_logger, general_logger
 
 
 class TaskAlreadyExistsError(Exception):

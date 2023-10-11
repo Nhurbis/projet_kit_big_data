@@ -1,5 +1,5 @@
 from datetime import datetime
-from todolist.utils.Loggers import debug_logger, general_logger
+from todolist.utils.loggers import debug_logger, general_logger
 
 
 class TagError(Exception):
