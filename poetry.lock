@@ -35,6 +35,16 @@ trio = ["trio (>=0.14,<0.23)"]
 wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
+name = "logging"
+version = "0.4.9.6"
+description = "A logging module for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "logging-0.4.9.6.tar.gz", hash = "sha256:26f6b50773f085042d301085bd1bf5d9f3735704db9f37c1ce6d8b85c38f2417"},
+]
+
+[[package]]
 name = "pymongo"
 version = "4.5.0"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
@@ -218,4 +228,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "07bc1b55225fae9ff3d4d530d62810458fc876cafbaea774471ae51a448fbd5e"
+content-hash = "f5fe4d1a8d5f1badf75444870fb12922db250796357552cabd7083f48afa57fb"

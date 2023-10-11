@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.9"
 datetime = "^5.2"
 pymongo = "^4.5.0"
+logging = "^0.4.9.6"
 
 
 [build-system]
