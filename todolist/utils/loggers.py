@@ -1,15 +1,5 @@
 import logging
 
-# Création du logger pour les erreurs critiques
-critical_logger = logging.getLogger('critical_logger')
-critical_logger.setLevel(logging.CRITICAL)
-critical_file_handler = logging.FileHandler(
-    'logs/critical_errors.log', encoding='utf-8')
-critical_formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-critical_file_handler.setFormatter(critical_formatter)
-critical_logger.addHandler(critical_file_handler)
-
 # Création du logger pour le debug
 debug_logger = logging.getLogger('debug_logger')
 debug_logger.setLevel(logging.DEBUG)

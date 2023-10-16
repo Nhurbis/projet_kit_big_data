@@ -60,19 +60,6 @@ class Task:
         self.completion_date = None
         self.tags = tags if tags else []
 
-    def mark_completed(self):
-        """
-        Marks a task as completed and updates the completion_date.
-
-        :returns: None
-        """
-        if self.completed:
-            debug_logger.debug("La tâche est déjà marquée comme complétée.")
-            raise TaskAlreadyCompletedError(
-                "La tâche est déjà marquée comme complétée.")
-        self.completed = True
-        self.completion_date = datetime.now()
-
     def update_task(self, new_name=None, new_description=None):
         """
         Updates the name and/or description of a task and sets the last_modified date.
@@ -112,48 +99,6 @@ class Task:
                 "Aucun paramètre de modification n'a été fourni.")
             raise ValueError("Aucun paramètre de modification n'a été fourni.")
 
-    def add_tag(self, tag: str):
-        """
-        Adds a tag to the task if it doesn't already exist and updates the last_modified date.
-
-        :param tag: The tag to add.
-        :type tag: str
-
-        :returns: None
-        """
-        if not isinstance(tag, str):
-            debug_logger.debug("Le tag doit être une chaîne de caractères.")
-            raise TypeError("Le tag doit être une chaîne de caractères.")
-
-        if tag in self.tags:
-            debug_logger.debug(f"Le tag '{tag}' existe déjà pour cette tâche.")
-            raise TagError(f"Le tag '{tag}' existe déjà pour cette tâche.")
-
-        if tag not in self.tags:
-            general_logger.info(
-                "Ajout d'un tag à une tâche : " + self.name + " -> " + tag)
-            self.tags.append(tag)
-            self.last_modified = datetime.now()
-
-    def remove_tag(self, tag):
-        """
-        Removes a tag from the task if it exists and updates the last_modified date.
-
-        :param tag: The tag to remove.
-        :type tag: str
-
-        :returns: None
-        """
-        if tag not in self.tags:
-            debug_logger.debug(
-                f"Le tag '{tag}' n'existe pas pour cette tâche.")
-            raise TagError(f"Le tag '{tag}' n'existe pas pour cette tâche.")
-        if tag in self.tags:
-            general_logger.info(
-                "Suppression d'un tag à une tâche : " + self.name + " -> " + tag)
-            self.tags.remove(tag)
-            self.last_modified = datetime.now()
-
     def __str__(self):
         """
         Returns a string representation of the Task object.
@@ -164,6 +109,12 @@ class Task:
         return f"{self.name} - {self.description} (Completed: {self.completed})"
 
     def to_dict(self):
+        """
+        Returns a dictionary representation of the Task object.
+
+        :returns: A dictionary representing the task.
+        :rtype: dict
+        """
         return {
             "name": self.name,
             "description": self.description,
@@ -176,6 +127,15 @@ class Task:
 
     @classmethod
     def from_dict(cls, data):
+        """
+        Creates a Task object from a dictionary.
+
+        :param data: The dictionary to create the Task object from.
+        :type data: dict
+
+        :returns: A Task object.
+        :rtype: Task
+        """
         task = cls(data["name"], data["description"], data.get("tags", []))
         task.created_at = data["created_at"]
         task.completed = data["completed"]
