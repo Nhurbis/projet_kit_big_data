@@ -11,4 +11,4 @@ jobs:
       - name: Install dependencies
         run: pip install pycodestyle
       - name: Run PEP8 check
-        run: pycodestyle --first kitbgd.py
+        run: pycodestyle --first __init__.py
