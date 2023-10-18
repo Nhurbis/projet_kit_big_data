@@ -12,3 +12,7 @@ jobs:
         run: pip install pycodestyle
       - name: Run PEP8 check
         run: pycodestyle --first __init__.py
+      - name: Run PEP8 check
+        run: pycodestyle --first Task.py
+      - name: Run PEP8 check
+        run: pycodestyle --first TaskList.py
