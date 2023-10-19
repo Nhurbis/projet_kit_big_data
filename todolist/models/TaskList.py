@@ -2,14 +2,7 @@ from datetime import datetime
 from todolist.config.db_config import db
 from todolist.models.Task import Task
 from todolist.utils.loggers import debug_logger, general_logger
-
-
-class TaskAlreadyExistsError(Exception):
-    pass
-
-
-class TaskNotFoundError(Exception):
-    pass
+from todolist.utils.exception_perso import TaskAlreadyExistsError, TaskNotFoundError
 
 
 class TaskList:
@@ -19,15 +12,16 @@ class TaskList:
     :ivar tasks: A dictionary to hold Task objects.
     """
 
-    def __init__(self):
+    def __init__(self, titre: str):
         """
         Initializes an empty dictionary to hold Task objects.
 
         :returns: None
         """
-        self.collection = db.tasks
+        self.titre = titre
+        self.collection = db[titre]
 
-    def add_task(self, name: str, description: str, tags=None):
+    def add_task(self, name: str, description: str):
         """
         Adds a new task to the task list.
 
@@ -35,30 +29,37 @@ class TaskList:
         :type name: str
         :param description: The description of the task.
         :type description: str
-        :param tags: A list of tags for the task. Defaults to None.
-        :type tags: list, optional
 
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if not isinstance(name, str):
-            debug_logger.debug("Le nom doit être des chaînes de caractères.")
-            raise TypeError(
-                "Le nom et la description doivent être des chaînes de caractères.")
+        try :
+            if not isinstance(name, str):
+                debug_logger.debug(
+                    "add_task: name n'est pas un string: %s.", type(name))
+                raise TypeError(
+                    "Le nom doit être une chaîne de caractères.")
 
-        if not name:
-            debug_logger.debug("Le nom ne peut pas être vide.")
-            raise ValueError("Le nom ne peut pas être vide.")
+            elif not name:
+                debug_logger.debug("add_task: name est vide: %s.", name)
+                raise ValueError("Le nom ne peut pas être vide.")
+            
+            elif self.collection.find_one({"name": name}):
+                debug_logger.debug("add_task: La tâche existe déjà: %s.", name)
+                general_logger.info(
+                    "Tentative d'ajout d'une tâche existante : %s", name)
+                raise TaskAlreadyExistsError("La tâche '%s' existe déjà." % name)
 
-        if self.collection.find_one({"name": name}):
-            debug_logger.debug("La tâche existe déjà.")
-            general_logger.info(
-                "Tentative d'ajout d'une tâche existante : %s", name)
-            raise TaskAlreadyExistsError("La tâche '%s' existe déjà." % name)
-
-        general_logger.info("Ajout d'une nouvelle tâche : %s", name)
-        task = Task(name, description, tags)
-        self.collection.insert_one(task.to_dict())
+            else:
+                general_logger.info("Ajout d'une nouvelle tâche : %s", name)
+                task = Task(name, description)
+                self.collection.insert_one(task.to_dict())
+        except TypeError as e:
+            print(e)
+        except ValueError as e:
+            print(e)
+        except TaskAlreadyExistsError as e:
+            print(e)
 
     def complete_task(self, name: str):
         """
@@ -70,16 +71,16 @@ class TaskList:
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if not self.collection.find_one({"name": name}):
-            debug_logger.debug("La tâche n'existe pas.")
-            general_logger.info(
-                "Tentative de complétion d'une tâche inexistante : %s", name)
-            raise TaskNotFoundError("La tâche '%s' n'existe pas." % name)
+        Task.completed(self.collection, name)
 
-        general_logger.info("Complétion d'une tâche : %s", name)
+    def remove_all(self):
+        """
+        Removes all tasks from the task list.
 
-        self.collection.update_one(
-            {"name": name}, {"$set": {"completed": True, "completion_date": datetime.now()}})
+        :returns: A message indicating success or failure.
+        :rtype: str
+        """
+        self.collection.delete_many({})
 
     def remove_task(self, name: str):
         """
@@ -92,15 +93,19 @@ class TaskList:
         :rtype: str
         """
         if not self.collection.find_one({"name": name}):
-            debug_logger.debug("La tâche n'existe pas.")
+            debug_logger.debug("remove_task: task inexisante : ", name)
             general_logger.info(
                 "Tentative de suppression d'une tâche inexistante : %s", name)
             raise TaskNotFoundError("La tâche '%s' n'existe pas." % name)
 
-        general_logger.info("Suppression d'une tâche : %s", name)
-        self.collection.delete_one({"name": name})
+        else:
+            general_logger.info("Suppression d'une tâche : %s", name)
+            self.collection.delete_one({"name": name})
 
-    def display_tasks(self):
+    def update_task(self, name: str, new_name: str = None, new_description: str = None):
+        Task.update(self.collection, name, new_name, new_description)
+
+    def display_all_tasks(self):
         """
         Displays all tasks in the task list.
 
@@ -112,7 +117,48 @@ class TaskList:
                 "Tentative d'affichage d'une liste de tâches vide.")
             print("Aucune tâche à afficher.")
             return
-        general_logger.info("Affichage d'une liste de tâches.")
-        for task_data in tasks:
-            task = Task.from_dict(task_data)
-            print(task)
+
+        else:
+            general_logger.info("Affichage d'une liste de tâches.")
+            for task_data in tasks:
+                task = Task.from_dict(task_data)
+                print(task)
+
+    def display_done_tasks(self):
+        """
+        Displays all completed tasks in the task list.
+
+        :returns: None
+        """
+        tasks = self.collection.find({"completed": True})
+        if not tasks:
+            general_logger.info(
+                "Tentative d'affichage d'une liste de tâches complétées vide.")
+            print("Aucune tâche complétée à afficher.")
+            return
+
+        else:
+            general_logger.info("Affichage d'une liste de tâches complétées.")
+            for task_data in tasks:
+                task = Task.from_dict(task_data)
+                print(task)
+
+    def display_todo_tasks(self):
+        """
+        Displays all incomplete tasks in the task list.
+
+        :returns: None
+        """
+        tasks = self.collection.find({"completed": False})
+        if not tasks:
+            general_logger.info(
+                "Tentative d'affichage d'une liste de tâches non terminées vide.")
+            print("Aucune tâche incomplète à afficher.")
+            return
+
+        else:
+            general_logger.info(
+                "Affichage d'une liste de tâches non terminées.")
+            for task_data in tasks:
+                task = Task.from_dict(task_data)
+                print(task)
