@@ -11,4 +11,4 @@ jobs:
       - name: Install dependencies
         run: pip install docstr-coverage
       - name: Run coverage check
-        run: docstr-coverage ./*.py
+        run: docstr-coverage ./*
