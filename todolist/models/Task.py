@@ -1,13 +1,7 @@
 from datetime import datetime
 from todolist.utils.loggers import debug_logger, general_logger
-
-
-class TagError(Exception):
-    pass
-
-
-class TaskAlreadyCompletedError(Exception):
-    pass
+from todolist.utils.exception_perso import TaskAlreadyExistsError, TaskNotFoundError
+from todolist.config.db_config import db
 
 
 class Task:
@@ -18,8 +12,6 @@ class Task:
     :type name: str
     :param description: A description of the task.
     :type description: str
-    :param tags: A list of tags associated with the task. Optional.
-    :type tags: list, optional
 
     :ivar name: The name of the task.
     :ivar description: A description of the task.
@@ -27,77 +19,35 @@ class Task:
     :ivar completed: Whether the task is completed or not.
     :ivar last_modified: The time the task was last modified.
     :ivar completion_date: The time the task was completed.
-    :ivar tags: A list of tags associated with the task.
     """
 
-    def __init__(self, name, description, tags=None):
+    def __init__(self, name, description=""):
         """
-        Initializes a Task object with a name, description, and optional tags.
+        Initializes a Task object with a name and description.
 
         :param name: The name of the task.
         :type name: str
         :param description: A description of the task.
         :type description: str
-        :param tags: A list of tags associated with the task. Defaults to None.
-        :type tags: list, optional
         """
-        if not isinstance(name, str) or not isinstance(description, str):
+        if not isinstance(name, str):
             debug_logger.debug(
-                "Le nom et la description doivent être des chaînes de caractères.")
+                "init: name not a string : %s.", type(name))
             raise TypeError(
-                "Le nom et la description doivent être des chaînes de caractères.")
+                "Le nom doit être une châine de caractères.")
 
-        if not name or not description:
+        if not isinstance(description, str):
             debug_logger.debug(
-                "Le nom et la description ne peuvent pas être vides.")
+                "init: description not a string : %s.", type(description))
             raise ValueError(
-                "Le nom et la description ne peuvent pas être vides.")
+                "La description doit être une chaîne de caractère.")
+        
         self.name = name
         self.description = description
         self.created_at = datetime.now()
         self.completed = False
         self.last_modified = datetime.now()
         self.completion_date = None
-        self.tags = tags if tags else []
-
-    def update_task(self, new_name=None, new_description=None):
-        """
-        Updates the name and/or description of a task and sets the last_modified date.
-
-        :param new_name: The new name for the task. Defaults to None.
-        :type new_name: str, optional
-        :param new_description: The new description for the task. Defaults to None.
-        :type new_description: str, optional
-
-        :returns: None
-        """
-        if new_name:
-            if not isinstance(new_name, str):
-                debug_logger.debug(
-                    "Le nouveau nom doit être une chaîne de caractères.")
-                raise TypeError(
-                    "Le nouveau nom doit être une chaîne de caractères.")
-
-            general_logger.info(
-                "Modification du nom d'une tâche : " + self.name + " -> " + new_name)
-            self.name = new_name
-            self.last_modified = datetime.now()
-
-        if new_description:
-            if not isinstance(new_description, str):
-                debug_logger.debug(
-                    "La nouvelle description doit être une chaîne de caractères.")
-                raise TypeError(
-                    "La nouvelle description doit être une chaîne de caractères.")
-
-            general_logger.info(
-                "Modification de la description d'une tâche : " + self.name + " -> " + new_description)
-            self.description = new_description
-            self.last_modified = datetime.now()
-        if not new_name and not new_description:
-            debug_logger.debug(
-                "Aucun paramètre de modification n'a été fourni.")
-            raise ValueError("Aucun paramètre de modification n'a été fourni.")
 
     def __str__(self):
         """
@@ -122,7 +72,6 @@ class Task:
             "completed": self.completed,
             "last_modified": self.last_modified,
             "completion_date": self.completion_date,
-            "tags": self.tags
         }
 
     @classmethod
@@ -136,9 +85,54 @@ class Task:
         :returns: A Task object.
         :rtype: Task
         """
-        task = cls(data["name"], data["description"], data.get("tags", []))
+        task = cls(data["name"], data["description"])
         task.created_at = data["created_at"]
         task.completed = data["completed"]
         task.last_modified = data["last_modified"]
         task.completion_date = data["completion_date"]
         return task
+    
+    @staticmethod
+    def completed(collection, name):
+        if not collection.find_one({"name": name}):
+            debug_logger.debug("completed: task inexisante : ", name)
+            general_logger.info(
+                "Tentative de complétion d'une tâche inexistante : %s", name)
+            raise TaskNotFoundError("La tâche '%s' n'existe pas." % name)
+        
+        else :
+            general_logger.info("Complétion d'une tâche : %s", name)
+            collection.update_one(
+                {"name": name}, {"$set": {"completed": True, "completion_date": datetime.now()}})
+    
+    @staticmethod
+    def update(collection, name, new_name, new_description):
+        if not isinstance(name, str):
+            debug_logger.debug("update: name n'est pas un string: %s.", type(name))
+            raise TypeError(
+                "Le nom de la task à modifier doit être des chaînes de caractères.")
+
+        elif not new_description and not new_name:
+            debug_logger.debug("update: new_description et new_name sont vides: %s.", name)
+            return
+
+        elif not collection.find_one({"name": name}):
+            debug_logger.debug("update: La tâche n'existe pas: %s.", name)
+            general_logger.info("Tentative de modification d'une tache inexistante : %s", name)
+            raise TaskNotFoundError("La tache '%s' n'existe pas." % name)
+        
+        else:
+            if new_name:
+                if not isinstance(new_name, str):
+                    debug_logger.debug("update: new_name n'est pas un string: %s.", type(new_name))
+                    general_logger.info("Tentative de modification du nom d'une tache avec un nom non string : %s", new_name)
+                else:
+                    general_logger.info("Update de la tâche %s avec nouveau nom %s e", name, new_name)
+                    collection.update_one({"name": name}, {"$set": {"name": new_name}})
+            if new_description:
+                if not isinstance(new_description, str):
+                    debug_logger.debug("update: new_description n'est pas un string: %s.", type(new_description))
+                    general_logger.info("Tentative de modification de la description d'une tache avec une description non string : %s", new_description)
+                else:
+                    general_logger.info("Update de la tâche %s avec nouvelle description %s e", name, new_description)
+                    collection.update_one({"name": name}, {"$set": {"description": new_description}})
