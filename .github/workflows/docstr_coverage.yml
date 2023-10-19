@@ -1,0 +1,14 @@
+name: DocString checks
+
+on: [push]
+
+jobs:
+  docString-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: pip install docstr-coverage
+      - name: Run coverage check
+        run: docstr-coverage /projet_kit_big_data/
