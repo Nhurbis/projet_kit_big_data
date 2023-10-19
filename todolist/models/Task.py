@@ -30,17 +30,22 @@ class Task:
         :param description: A description of the task.
         :type description: str
         """
-        if not isinstance(name, str):
-            debug_logger.debug(
-                "init: name not a string : %s.", type(name))
-            raise TypeError(
-                "Le nom doit être une châine de caractères.")
+        try:
+            if not isinstance(name, str):
+                debug_logger.debug(
+                    "init: name not a string : %s.", type(name))
+                raise TypeError(
+                    "Le nom doit être une châine de caractères.")
 
-        if not isinstance(description, str):
-            debug_logger.debug(
-                "init: description not a string : %s.", type(description))
-            raise ValueError(
-                "La description doit être une chaîne de caractère.")
+            if not isinstance(description, str):
+                debug_logger.debug(
+                    "init: description not a string : %s.", type(description))
+                raise ValueError(
+                    "La description doit être une chaîne de caractère.")
+        except TypeError as e:
+            print(e)
+        except ValueError as e:
+            print(e)
         
         self.name = name
         self.description = description
@@ -94,45 +99,57 @@ class Task:
     
     @staticmethod
     def completed(collection, name):
-        if not collection.find_one({"name": name}):
-            debug_logger.debug("completed: task inexisante : ", name)
-            general_logger.info(
-                "Tentative de complétion d'une tâche inexistante : %s", name)
-            raise TaskNotFoundError("La tâche '%s' n'existe pas." % name)
-        
-        else :
-            general_logger.info("Complétion d'une tâche : %s", name)
-            collection.update_one(
-                {"name": name}, {"$set": {"completed": True, "completion_date": datetime.now()}})
+        try:
+            if not collection.find_one({"name": name}):
+                debug_logger.debug("completed: task inexisante : ", name)
+                general_logger.info(
+                    "Tentative de complétion d'une tâche inexistante : %s", name)
+                raise TaskNotFoundError("La tâche '%s' n'existe pas." % name)
+            
+            else :
+                general_logger.info("Complétion d'une tâche : %s", name)
+                collection.update_one(
+                    {"name": name}, {"$set": {"completed": True, "completion_date": datetime.now()}})
+        except TaskNotFoundError as e:
+            print(e)
     
     @staticmethod
     def update(collection, name, new_name, new_description):
-        if not isinstance(name, str):
-            debug_logger.debug("update: name n'est pas un string: %s.", type(name))
-            raise TypeError(
-                "Le nom de la task à modifier doit être des chaînes de caractères.")
+        try:
+            if not isinstance(name, str):
+                debug_logger.debug("update: name n'est pas un string: %s.", type(name))
+                raise TypeError(
+                    "Le nom de la task à modifier doit être des chaînes de caractères.")
 
-        elif not new_description and not new_name:
-            debug_logger.debug("update: new_description et new_name sont vides: %s.", name)
+            elif not new_description and not new_name:
+                debug_logger.debug("update: new_description et new_name sont vides: %s.", name)
+                raise ValueError("Le nom et la description ne peuvent pas être vides.")
+
+            elif not collection.find_one({"name": name}):
+                debug_logger.debug("update: La tâche n'existe pas: %s.", name)
+                general_logger.info("Tentative de modification d'une tache inexistante : %s", name)
+                raise TaskNotFoundError("La tache '%s' n'existe pas." % name)
+        except TypeError as e:
+            print(e)
             return
-
-        elif not collection.find_one({"name": name}):
-            debug_logger.debug("update: La tâche n'existe pas: %s.", name)
-            general_logger.info("Tentative de modification d'une tache inexistante : %s", name)
-            raise TaskNotFoundError("La tache '%s' n'existe pas." % name)
+        except ValueError as e:
+            print(e)
+            return
+        except TaskNotFoundError as e:
+            print(e)
+            return
         
-        else:
-            if new_name:
-                if not isinstance(new_name, str):
-                    debug_logger.debug("update: new_name n'est pas un string: %s.", type(new_name))
-                    general_logger.info("Tentative de modification du nom d'une tache avec un nom non string : %s", new_name)
-                else:
-                    general_logger.info("Update de la tâche %s avec nouveau nom %s e", name, new_name)
-                    collection.update_one({"name": name}, {"$set": {"name": new_name}})
-            if new_description:
-                if not isinstance(new_description, str):
-                    debug_logger.debug("update: new_description n'est pas un string: %s.", type(new_description))
-                    general_logger.info("Tentative de modification de la description d'une tache avec une description non string : %s", new_description)
-                else:
-                    general_logger.info("Update de la tâche %s avec nouvelle description %s e", name, new_description)
-                    collection.update_one({"name": name}, {"$set": {"description": new_description}})
+        if new_name:
+            if not isinstance(new_name, str):
+                debug_logger.debug("update: new_name n'est pas un string: %s.", type(new_name))
+                general_logger.info("Tentative de modification du nom d'une tache avec un nom non string : %s", new_name)
+            else:
+                general_logger.info("Update de la tâche %s avec nouveau nom %s e", name, new_name)
+                collection.update_one({"name": name}, {"$set": {"name": new_name}})
+        if new_description:
+            if not isinstance(new_description, str):
+                debug_logger.debug("update: new_description n'est pas un string: %s.", type(new_description))
+                general_logger.info("Tentative de modification de la description d'une tache avec une description non string : %s", new_description)
+            else:
+                general_logger.info("Update de la tâche %s avec nouvelle description %s e", name, new_description)
+                collection.update_one({"name": name}, {"$set": {"description": new_description}})

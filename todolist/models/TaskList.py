@@ -33,27 +33,33 @@ class TaskList:
         :returns: A message indicating success or failure.
         :rtype: str
         """
-        if not isinstance(name, str):
-            debug_logger.debug(
-                "add_task: name n'est pas un string: %s.", type(name))
-            raise TypeError(
-                "Le nom doit être une chaîne de caractères.")
+        try :
+            if not isinstance(name, str):
+                debug_logger.debug(
+                    "add_task: name n'est pas un string: %s.", type(name))
+                raise TypeError(
+                    "Le nom doit être une chaîne de caractères.")
 
-        elif not name:
-            debug_logger.debug("add_task: name est vide: %s.", name)
-            raise ValueError("Le nom ne peut pas être vide.")
+            elif not name:
+                debug_logger.debug("add_task: name est vide: %s.", name)
+                raise ValueError("Le nom ne peut pas être vide.")
+            
+            elif self.collection.find_one({"name": name}):
+                debug_logger.debug("add_task: La tâche existe déjà: %s.", name)
+                general_logger.info(
+                    "Tentative d'ajout d'une tâche existante : %s", name)
+                raise TaskAlreadyExistsError("La tâche '%s' existe déjà." % name)
 
-        elif self.collection.find_one({"name": name}):
-            debug_logger.debug("add_task: La tâche existe déjà: %s.", name)
-            general_logger.info(
-                "Tentative d'ajout d'une tâche existante : %s", name)
-            raise TaskAlreadyExistsError("La tâche '%s' existe déjà." % name)
-            return
-
-        else:
-            general_logger.info("Ajout d'une nouvelle tâche : %s", name)
-            task = Task(name, description)
-            self.collection.insert_one(task.to_dict())
+            else:
+                general_logger.info("Ajout d'une nouvelle tâche : %s", name)
+                task = Task(name, description)
+                self.collection.insert_one(task.to_dict())
+        except TypeError as e:
+            print(e)
+        except ValueError as e:
+            print(e)
+        except TaskAlreadyExistsError as e:
+            print(e)
 
     def complete_task(self, name: str):
         """
