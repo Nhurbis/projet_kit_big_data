@@ -19,7 +19,7 @@ class TaskList:
         :returns: None
         """
         self.titre = titre
-        self.collection = db.tasks
+        self.collection = db[titre]
 
     def add_task(self, name: str, description: str):
         """
