@@ -1,0 +1,10 @@
+2023-10-22 14:21:25,011 - debug_logger - DEBUG - add_task: La tâche existe déjà: Bonjour liste 2.
+2023-10-22 15:01:44,195 - debug_logger - DEBUG - add_task: La tâche existe déjà: test.
+2023-10-22 15:19:52,099 - debug_logger - DEBUG - update: La tâche n'existe pas: test.
+2023-10-22 15:34:04,459 - debug_logger - DEBUG - add_task: La tâche existe déjà: Bonjour liste 2.
+2023-10-22 15:36:18,714 - debug_logger - DEBUG - update: new_description et new_name sont vides: Refaire les courses.
+2023-10-22 15:36:32,042 - debug_logger - DEBUG - update: new_description et new_name sont vides: Refaire les courses.
+2023-10-22 15:40:35,868 - debug_logger - DEBUG - update: La tâche n'existe pas: ceci est une nouvelle tâche.
+2023-10-22 15:44:46,697 - debug_logger - DEBUG - add_task: La tâche existe déjà: Bonjour liste 2.
+2023-10-22 15:46:07,569 - debug_logger - DEBUG - add_task: La tâche existe déjà: Bonjour liste 2.
+2023-10-22 15:47:01,480 - debug_logger - DEBUG - add_task: La tâche existe déjà: Bonjour liste 2.
