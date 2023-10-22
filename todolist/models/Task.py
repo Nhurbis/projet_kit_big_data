@@ -139,13 +139,6 @@ class Task:
             print(e)
             return
         
-        if new_name:
-            if not isinstance(new_name, str):
-                debug_logger.debug("update: new_name n'est pas un string: %s.", type(new_name))
-                general_logger.info("Tentative de modification du nom d'une tache avec un nom non string : %s", new_name)
-            else:
-                general_logger.info("Update de la tâche %s avec nouveau nom %s e", name, new_name)
-                collection.update_one({"name": name}, {"$set": {"name": new_name}})
         if new_description:
             if not isinstance(new_description, str):
                 debug_logger.debug("update: new_description n'est pas un string: %s.", type(new_description))
@@ -153,3 +146,12 @@ class Task:
             else:
                 general_logger.info("Update de la tâche %s avec nouvelle description %s e", name, new_description)
                 collection.update_one({"name": name}, {"$set": {"description": new_description}})
+                
+        if new_name:
+            if not isinstance(new_name, str):
+                debug_logger.debug("update: new_name n'est pas un string: %s.", type(new_name))
+                general_logger.info("Tentative de modification du nom d'une tache avec un nom non string : %s", new_name)
+            else:
+                general_logger.info("Update de la tâche %s avec nouveau nom %s e", name, new_name)
+                collection.update_one({"name": name}, {"$set": {"name": new_name}})
+        
