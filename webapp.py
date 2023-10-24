@@ -6,6 +6,9 @@ from todolist.models.TaskList import TaskList
 task_list = TaskList('liste_test_1')
 
 def manage_tasks(action, task_name="", new_name="", description=None, new_description=""):
+    """
+    Gère les tâches en fonction de l'action choisie.
+    """
     if action == "Afficher toutes les tâches":
         tasks = task_list.collection.find()
         return "\n".join([str(Task.from_dict(task_data)) for task_data in tasks])

@@ -99,6 +99,9 @@ class Task:
     
     @staticmethod
     def completed(collection, name):
+        """
+        Marks a task as completed.
+        """
         try:
             if not collection.find_one({"name": name}):
                 debug_logger.debug("completed: task inexisante : ", name)
@@ -115,6 +118,9 @@ class Task:
     
     @staticmethod
     def update(collection, name, new_name, new_description):
+        """
+        Updates a task's name and/or description.
+        """
         try:
             if not isinstance(name, str):
                 debug_logger.debug("update: name n'est pas un string: %s.", type(name))

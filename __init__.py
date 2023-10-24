@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Marquer une tâche comme terminée
     task_list.complete_task("Manger des pâtes")
 
-    #changer la description d'une tâche
+    # changer la description d'une tâche
     task_list.update_task('Manger des pâtes', new_description='carbonara en fait')
 
     # Afficher les tâches terminées
@@ -30,8 +30,9 @@ if __name__ == "__main__":
     task_list.display_all_tasks()
 
     # Ajouter une tâche
-    task_list2.add_task("Bonjour liste 2","juste un test")
-    
+    task_list2.add_task("Bonjour liste 2", "juste un test")
+
     # On l'affiche
     print("-------- Tâches 2 ------- :")
     task_list2.display_all_tasks()
+    
