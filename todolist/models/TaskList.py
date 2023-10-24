@@ -103,6 +103,9 @@ class TaskList:
             self.collection.delete_one({"name": name})
 
     def update_task(self, name: str, new_name: str = None, new_description: str = None):
+        """
+        Updates a task in the task list.
+        """
         Task.update(self.collection, name, new_name, new_description)
 
     def display_all_tasks(self):
