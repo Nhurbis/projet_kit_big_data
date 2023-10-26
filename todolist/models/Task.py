@@ -1,6 +1,6 @@
 from datetime import datetime
 from todolist.utils.loggers import debug_logger, general_logger
-from todolist.utils.exception_perso import TaskAlreadyExistsError, TaskNotFoundError
+from todolist.utils.exception_perso import TaskNotFoundError
 from todolist.config.db_config import db
 
 
