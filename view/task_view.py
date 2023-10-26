@@ -13,9 +13,21 @@ class TaskView:
                     gr.Markdown("### Add a Task")
                     with gr.Row():
                         title = gr.Textbox(label="Title")
-                        status = gr.Radio(["True","False"], label="Completed")
+                        completed = gr.Radio(["True","False"], label="Completed")
+                    description = gr.Textbox(label="Description")
                     output = gr.Textbox(label="Output")
-                    gr.Button("Save Task").click(self.controller.add_task, inputs=[title, status], outputs=output)
+                    with gr.Row():
+                        gr.Button("delete Task").click(self.controller.delete_task, inputs=[title], outputs=output)
+                        gr.Button("Save Task").click(self.controller.add_task, inputs=[title, completed,description], outputs=output)
+                    
+                    gr.Markdown("### Update a Task")
+                    with gr.Row():
+                        old_title = gr.Textbox(label="Old Title")
+                        new_title = gr.Textbox(label="new_Title")
+                        new_completed = gr.Radio(["True","False"], label="Completed")
+                    new_description = gr.Textbox(label="new Description")
+                    output = gr.Textbox(label="Output")
+                    gr.Button("update Task").click(self.controller.update_task, inputs=[old_title, new_title, new_completed, new_description], outputs=output)       
                 with gr.Column():
                     gr.Markdown("### All Tasks")
                     task_list = gr.Textbox(label="Tasks", elem_id="task-list", lines=10)
