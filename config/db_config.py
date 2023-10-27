@@ -13,9 +13,8 @@ try:
     db = client[MONGO_INITDB_DATABASE]
     debug_logger.info("Connexion à la base de données réussie.")
 except Exception as e:
-    errors_logger.error("Erreur lors de la connexion à la base de données: %s", DATABASE_URL)
+    errors_logger.error(
+        "Erreur lors de la connexion à la base de données: %s", DATABASE_URL)
     errors_logger.exception(e)
     debug_logger.debug("Erreur lors de la connexion à la base de données.")
     print(e)
-
-

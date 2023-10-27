@@ -1,61 +1,152 @@
-from model.task_model import TaskModel
+from typing import Optional, List
 from utils.loggers import debug_logger, errors_logger
+from model.task import Task
+from model.tasklist import TaskList
+from config.db_config import db
 
 
 class TaskController:
-    def __init__(self):
-        self.model = TaskModel()
+    """A class to control the Task and TaskList models."""
 
-    def add_task(self, title, completed=False,description=""):
-        if not title:
-            debug_logger.info("Invalid input (no title) for adding task")
-            return "Title is necessary to save task"
-        completed = True if completed == "True" else False
-        task_id = self.model.save_task(title, completed,description)
-        if task_id:
-            debug_logger.info(f"Task added with ID: {task_id}")
-            return f"Task saved with ID: {task_id}"
-        else:
-            debug_logger.error("Failed to add task")
-            return "Failed to save task"
+    @staticmethod
+    def create_tasklist(title: str) -> str:
+        """Create a new task list.
 
-    def show_all_tasks(self):
-        tasks = self.model.get_all_tasks()
-        if tasks is not None:
-            debug_logger.info("Tasks fetched successfully")
-            return "\n".join([f'{task["title"]} --- completed {task["completed"]} \n \t-> {task["description"]}' for task in tasks])
-        else:
-            debug_logger.error("Failed to fetch tasks")
-            return "Failed to fetch tasks"
-            
-    def update_task(self, old_title, new_title, new_completed, new_description):
-        new_completed = True if new_completed == "True" else False
-        if not old_title :
-            debug_logger.info("Invalid input (no old title) for updating task")
-            return "Old title is necessary to update task"
-        if not new_title and not new_description and not new_completed:
-            debug_logger.info("Invalid input (no new title or no new description or no new completed) for updating task")
-            return "New title or new description or new completed is necessary to update task"
-        
-        updated = self.model.update_task(old_title, new_title, new_description, new_completed)
-        if updated:
-            debug_logger.info(f"Task {old_title} updated successfully")
-            return "Task updated successfully"
-        else:
-            debug_logger.error(f"Failed to update task {old_title}")
-            errors_logger.error(f"Failed to update task {old_title}")
-            return "Failed to update task"
+        Args:
+            title (str): Title of the task list.
 
-    def delete_task(self,task_title):
-        if not task_title:
-            debug_logger.error("Invalid task title for deleting task")
-            return "Invalid task title"
+        Returns:
+            str: A success message with the task list ID or a failure message.
+        """
+        try:
+            tasklist = TaskList(title=title)
+            tasklist.save()
+            return f"Tasklist '{title}' added successfully! (Voici l'ID qui, en tant normal serait caché, {tasklist._id})"
+        except Exception as e:
+            errors_logger.error(
+                f"An error occurred while creating a TaskList: {str(e)}")
+            return "Failed to create TaskList!"
 
-        deleted = self.model.delete_task(task_title)
-        if deleted:
-            debug_logger.info(f"Task {task_title} deleted successfully")
-            return "Task deleted successfully"
-        else:
-            debug_logger.error(f"Failed to delete task {task_title}")
-            errors_logger.error(f"Failed to delete task {task_title}")
-            return "Failed to delete task"
+    @staticmethod
+    def add_task_to_tasklist(tasklist_id: str, name: str, description: str) -> Optional[str]:
+        """Add a task to a task list.
+
+        Args:
+            tasklist_id (str): ID of the task list.
+            name (str): Name of the task.
+            description (str): Description of the task.
+
+        Returns:
+            Optional[str]: A success message with the task ID or None if task list is not found.
+        """
+        try:
+            task_list = TaskList.get_tasklist_by_id(tasklist_id)
+            if task_list is not None:
+                new_task = Task(name, description)
+                task_list.tasks.append(new_task)
+                db.tasklists.update_one({"_id": tasklist_id}, {
+                                        "$push": {"tasks": new_task.to_dict()}})
+                debug_logger.info(
+                    "Tâche ajoutée avec succès à la liste de tâches.")
+                return f"Tâche ajoutée avec succès à la liste de tâches. (Voici l'ID qui, en tant normal serait caché, {new_task._id})"
+            else:
+                errors_logger.error(
+                    "Liste de tâches non trouvée avec l'ID: %s", tasklist_id)
+                return None
+        except Exception as e:
+            errors_logger.exception(
+                "Une erreur est survenue lors de l'ajout de la tâche à la liste de tâches.")
+            raise RuntimeError(
+                "Impossible d'ajouter la tâche à la liste de tâches.") from e
+
+    @staticmethod
+    def complete_task(tasklist_id: str, task_id: str) -> str:
+        """Mark a task as completed.
+
+        Args:
+            tasklist_id (str): ID of the task list.
+            task_id (str): ID of the task.
+
+        Returns:
+            str: A success message or an error message.
+        """
+        try:
+            task_list = TaskList.get_tasklist_by_id(tasklist_id)
+            if task_list is None:
+                return "Liste de tâches non trouvée."
+            task = next((t for t in task_list.tasks if t._id == task_id), None)
+            if task:
+                task.completed = True
+                task_list.save()
+                return "Tâche complétée avec succès."
+            else:
+                return "Tâche non trouvée."
+        except Exception as e:
+            errors_logger.error(
+                f"Une erreur s'est produite lors de la complétion d'une tâche : {str(e)}")
+            raise
+
+    @staticmethod
+    def delete_task(tasklist_id: str, task_id: str) -> str:
+        """Delete a task from a TaskList.
+
+        Args:
+            tasklist_id (str): ID of the task list.
+            task_id (str): ID of the task.
+
+        Returns:
+            str: A success message or an error message.
+        """
+        try:
+            task_list = TaskList.get_tasklist_by_id(tasklist_id)
+            if task_list is None:
+                return "Liste de tâches non trouvée."
+            task_list.tasks = [t for t in task_list.tasks if t._id != task_id]
+            task_list.save()
+            return "Tâche supprimée avec succès."
+        except Exception as e:
+            errors_logger.error(
+                f"Une erreur s'est produite lors de la suppression d'une tâche : {str(e)}")
+            raise
+
+    @staticmethod
+    def show_incomplete_tasks(tasklist_id: str) -> None:
+        """Print all incomplete tasks in a TaskList.
+
+        Args:
+            tasklist_id (str): ID of the task list.
+        """
+        try:
+            task_list = TaskList.get_tasklist_by_id(tasklist_id)
+            if task_list is None:
+                print("Liste de tâches non trouvée.")
+                return
+            for task in [t for t in task_list.tasks if not t.completed]:
+                print(task)
+        except Exception as e:
+            errors_logger.error(
+                f"Une erreur s'est produite lors de l'affichage des tâches incomplètes : {str(e)}")
+            raise
+
+    @staticmethod
+    def get_incomplete_tasks(tasklist_id: str) -> str:
+        """Get all incomplete tasks in a TaskList.
+
+        Args:
+            tasklist_id (str): ID of the task list.
+
+        Returns:
+            str: A list of incomplete tasks or an error message.
+        """
+        try:
+            task_list = TaskList.get_tasklist_by_id(tasklist_id)
+            if task_list:
+                incomplete_tasks = [
+                    task for task in task_list.tasks if not task.completed]
+                return "\n".join([f"{task.name}: {task.description}" for task in incomplete_tasks])
+            else:
+                return "Tasklist not found!"
+        except Exception as e:
+            errors_logger.error(
+                f"An error occurred while getting incomplete tasks: {str(e)}")
+            return "Failed to get incomplete tasks!"
