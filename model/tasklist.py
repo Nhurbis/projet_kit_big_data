@@ -65,6 +65,14 @@ class TaskList:
                 f"An error occurred while retrieving TaskList: {str(e)}")
         return None
 
+    def to_dict(self) -> Dict:
+        """Convert TaskList object to dictionary."""
+        return {
+            "_id": self._id,
+            "title": self.title,
+            "tasks": [task.to_dict() for task in self.tasks],
+        }
+
     @classmethod
     def from_dict(cls, data: Dict) -> "TaskList":
         """Create a TaskList object from a dictionary.
@@ -77,4 +85,5 @@ class TaskList:
 
         """
         tasks = [Task.from_dict(task) for task in data.get("tasks", [])]
-        return cls(title=data["title"], tasks=tasks, _id=data["_id"])
+        _id = data.get("_id")
+        return cls(title=data["title"], tasks=tasks, _id=_id)

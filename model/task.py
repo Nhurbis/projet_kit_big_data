@@ -69,3 +69,6 @@ class Task:
         elif not isinstance(created_at, datetime):
             created_at = None  # ou définissez une valeur par défaut si vous le souhaitez
         return cls(name, description, completed, created_at, _id)
+
+    def __str__(self):
+        return f"{self.name}: {self.description} (Complétée: {'Oui' if self.completed else 'Non'})"
