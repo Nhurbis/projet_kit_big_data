@@ -49,15 +49,15 @@ python task_manager_cli.py create_tasklist "Ma Liste de Tâches"
 We use pytest for unit testing. Run the tests using the following command:
 
 ```bash
-pytest
+pytest --cov=model tests/
 ```
 
 ## Documentation
 
-The documentation for this project is generated using Sphinx. To build the documentation locally, run:
+The documentation for this project is generated using Sphinx. To build the documentation locally, run in the docs folder:
 
 ```bash
-poetry run make -C docs html
+make html
 ```
 
 Then, open `docs/_build/html/index.html` in a web browser.
