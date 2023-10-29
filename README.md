@@ -41,16 +41,7 @@ poetry install
 
 ```bash
 # Add a new task
-python main.py add "Task Name" "Task Description"
-
-# Mark a task as completed
-python main.py complete <task_id>
-
-# Remove a task from the list
-python main.py remove <task_id>
-
-# Display the list of ongoing tasks
-python main.py list
+python task_manager_cli.py create_tasklist "Ma Liste de Tâches"
 ```
 
 ## Testing
