@@ -30,6 +30,9 @@ Follow these instructions to get the project up and running on your local machin
 git clone https://github.com/yourusername/todo-list-python.git
 cd todo-list-python
 ```
+2. Create docker build 
+
+```docker build -t les_meures``` 
 
 2. Set up a virtual environment and install dependencies:
 
@@ -66,3 +69,4 @@ Then, open `docs/_build/html/index.html` in a web browser.
 
 This project is set up with a CI/CD pipeline using GitHub Actions. 
 Any push to the main branch triggers the pipeline, which runs tests, checks code coverage, and deploys the documentation.
+
