@@ -11,6 +11,11 @@ datetime = "^5.2"
 pymongo = "^4.5.0"
 logging = "^0.4.9.6"
 gradio = "^3.50.2"
+pytest = "^7.4.3"
+pytest-cov = "^4.1.0"
+sphinx = "^7.2.6"
+mongomock = "^4.1.2"
+argparse = "^1.4.0"
 
 
 [build-system]

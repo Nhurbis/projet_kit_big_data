@@ -1,6 +1,8 @@
-from view.task_view import TaskView
+
+
+from view.task_view import create_gradio_interface
 
 
 if __name__ == "__main__":
-    view = TaskView()
-    view.start()
+    iface = create_gradio_interface()
+    iface.launch()
