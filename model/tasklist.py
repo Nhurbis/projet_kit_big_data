@@ -1,5 +1,4 @@
 from typing import List, Optional, Dict
-
 from config.db_config import db
 import uuid
 from utils.loggers import errors_logger

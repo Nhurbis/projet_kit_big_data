@@ -1,10 +1,10 @@
-.. Les meurés documentation master file, created by
-   sphinx-quickstart on Sat Oct 28 22:17:17 2023.
+.. gestion_tasklist documentation master file, created by
+   sphinx-quickstart on Sun Oct 29 21:23:34 2023.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Les meurés's documentation!
-======================================
+Welcome to gestion_tasklist's documentation!
+============================================
 
 .. toctree::
    :maxdepth: 2
