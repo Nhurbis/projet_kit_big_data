@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "y"
 version = "0.1.0"
-description = "Projet de todo list"
-authors = ["Your Name <you@example.com>"]
+description = "ToDo list du projet kit big data"
+authors = ["Guillaume", "Paul", "Aleksander", "Lucas", "Guillaume"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
