@@ -4,3 +4,5 @@ logs/*
 .vscode
 *.pyc
 logs/general.log
+build/
+dist/
