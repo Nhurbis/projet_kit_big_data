@@ -67,7 +67,7 @@ class Task:
         if isinstance(created_at, str):
             created_at = datetime.strptime(created_at, "%Y-%m-%d %H:%M:%S")
         elif not isinstance(created_at, datetime):
-            created_at = None  # ou définissez une valeur par défaut si vous le souhaitez
+            created_at = None  
         return cls(name, description, completed, created_at, _id)
 
     def __str__(self):
