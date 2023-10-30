@@ -1,14 +1,30 @@
-name: Lint and Commit
-on: [ push, pull_request ]
+name: Lint
+
+on: push
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest 
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v3
-    - uses: chartboost/ruff-action@v1
-      with:
-        gi thub_token: ${{ secrets.github_token }}
-        auto_fix: ${{ github.event_name == 'pull_request' }}
-        black: true
-        flake8: true
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+
+      - name: Install Python dependencies
+        run: pip install black flake8
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          # Enable linters
+          black: true
+          flake8: true
+          # Enable auto-fixing
+          auto_fix: true
