@@ -65,6 +65,15 @@ def create_gradio_interface():
                 show_incomplete_tasks_btn.click(show_incomplete_tasks, inputs=[
                                         tasklist_id_input], outputs=task_list_incomplete)
 
+        with gr.Row():
+            gr.Markdown("# Affichages des listes de tâches")
+
+        with gr.Row():
+            with gr.Column():
+                show_tasklists_btn = gr.Button("Afficher les Listes de Tâches")
+            with gr.Column():
+                task_list = gr.Textbox(label="Tasklists", elem_id="task-list", lines=10)
+                show_tasklists_btn.click(TaskController.get_all_tasklists, outputs=task_list)
     return app
 
 

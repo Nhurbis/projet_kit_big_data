@@ -64,7 +64,26 @@ class TaskList:
             errors_logger.error(
                 f"An error occurred while retrieving TaskList: {str(e)}")
         return None
+    
+    @staticmethod
+    def get_all_tasklists() -> List['TaskList']:
+        """Retrieve all TaskLists from the database.
 
+        Returns:
+            List[TaskList]: A list of TaskList instances.
+
+        """
+        try:
+            data = db.tasklists.find()
+            tasklists = []
+            for tasklist_data in data:
+                tasklists.append(TaskList.from_dict(tasklist_data))
+            return tasklists
+        except Exception as e:
+            errors_logger.error(
+                f"An error occurred while retrieving TaskLists: {str(e)}")
+            raise
+ 
     def to_dict(self) -> Dict:
         """Convert TaskList object to dictionary."""
         return {
