@@ -105,6 +105,67 @@ Then, open `docs/_build/html/index.html` in a web browser.
 
 This project is set up with a CI/CD pipeline using GitHub Actions. Any push to the main branch triggers the pipeline, which runs tests, checks code coverage, and deploys the documentation.
 
-## Sécurité
+## Security
 
 As part of this project, and in order to facilitate the teacher's grading process, the decision was made to leave the database connection string visible in the code (instead of using environment variables). Additionally, we are directly returning the \_id values to facilitate the use of the very simplistic gradio interface. In a real production environment, these choices would not have been made.
+
+## Creating a Python Package & Uploading to PyPI
+
+```bash
+python setup.py sdist bdist_wheel
+twine upload dist/* -u __token__ -p $token_key
+```
+
+## Performance Optimization
+
+When managing large amounts of data, it is crucial to optimize the library's performance to ensure a smooth and efficient user experience. Here are some strategies to achieve this, accompanied by examples of technologies and methods:
+
+### 1. Database Indexing
+
+- **Example**: Use MongoDB and create indexes on the most frequently searched fields to speed up queries.
+
+### 2. Efficient Database Queries
+
+- **Example**: Use SQLAlchemy (Python) to write optimized SQL queries and avoid unnecessary lazy loading.
+
+### 3. Pagination
+
+- **Example**: Use Django REST framework API to implement pagination in your API endpoints.
+
+### 4. Caching
+
+- **Example**: Use Redis to store the results of frequent queries and reduce response time.
+
+### 5. Lazy Loading
+
+- **Example**: Use Vue.js or React to load components on demand and improve client-side performance.
+
+### 6. Parallelization
+
+- **Example**: Use asyncio (Python) or CompletableFuture (Java) libraries to parallelize asynchronous operations.
+
+### 7. Code Profiling and Optimization
+
+- **Example**: Use tools like Py-Spy (Python) or VisualVM (Java) to profile your application and identify bottlenecks.
+
+### 8. Efficient Memory Usage
+
+- **Example**: Use tools like Valgrind to detect memory leaks and optimize memory usage.
+
+### 9. Batch Processing
+
+- **Example**: Use Apache Spark or Apache Flink for batch processing of large amounts of data.
+
+### 10. Update Only When Necessary
+
+- **Example**: Use a version control system like Git to track changes and avoid unnecessary updates.
+
+### 11. Use Database Optimization Tools
+
+- **Example**: Use tools like MySQL Workbench or MongoDB Compass to monitor and optimize database performance.
+
+### 12. Data Compression
+
+- **Example**: Use compression algorithms like Gzip to reduce the
+
+size of data transferred over the network.
