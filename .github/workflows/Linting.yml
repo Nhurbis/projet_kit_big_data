@@ -7,3 +7,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: chartboost/ruff-action@v1
+      with:
+        gi thub_token: ${{ secrets.github_token }}
+        auto_fix: ${{ github.event_name == 'pull_request' }}
+        black: true
+        flake8: true

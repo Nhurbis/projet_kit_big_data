@@ -1,4 +1,3 @@
-import pytest
 from datetime import datetime
 from model.task import Task
 

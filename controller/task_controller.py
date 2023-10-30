@@ -1,5 +1,5 @@
 """A module for the TaskController class."""
-from typing import Optional, List
+from typing import Optional
 from utils.loggers import debug_logger, errors_logger
 from model.task import Task
 from model.tasklist import TaskList
