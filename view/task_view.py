@@ -1,38 +1,93 @@
 import gradio as gr
 from controller.task_controller import TaskController
 
-class TaskView:
-    def __init__(self):
-        self.controller = TaskController()
-        self.interface = self.create_interface()
 
-    def create_interface(self):
-        with gr.Blocks() as app:
-            with gr.Row():
-                with gr.Column():
-                    gr.Markdown("### Add a Task")
-                    with gr.Row():
-                        title = gr.Textbox(label="Title")
-                        completed = gr.Radio(["True","False"], label="Completed")
-                    description = gr.Textbox(label="Description")
-                    output = gr.Textbox(label="Output")
-                    with gr.Row():
-                        gr.Button("delete Task").click(self.controller.delete_task, inputs=[title], outputs=output)
-                        gr.Button("Save Task").click(self.controller.add_task, inputs=[title, completed,description], outputs=output)
+def create_gradio_interface():
+    with gr.Blocks() as app:
+        with gr.Row():
+            gr.Markdown("# Gestionnaire de Tâches")
+        
+        with gr.Row():
+            gr.Markdown("# Ajout Tasklist")
+            
+        with gr.Row():
+            with gr.Column():
+                with gr.Row():
+                    title_input = gr.Textbox(label="Titre de la tasklist")
+                    add_tasklist_btn = gr.Button("Ajouter Liste de Tâches")
                     
-                    gr.Markdown("### Update a Task")
-                    with gr.Row():
-                        old_title = gr.Textbox(label="Old Title")
-                        new_title = gr.Textbox(label="new_Title")
-                        new_completed = gr.Radio(["True","False"], label="Completed")
-                    new_description = gr.Textbox(label="new Description")
-                    output = gr.Textbox(label="Output")
-                    gr.Button("update Task").click(self.controller.update_task, inputs=[old_title, new_title, new_completed, new_description], outputs=output)       
-                with gr.Column():
-                    gr.Markdown("### All Tasks")
-                    task_list = gr.Textbox(label="Tasks", elem_id="task-list", lines=10)
-                    gr.Button("Show Tasks").click(self.controller.show_all_tasks, inputs=[], outputs=task_list)
-        return app
+            with gr.Column():
+                    output_create_tasklist = gr.Textbox(label="ID de la Liste de Tâches", lines=1)
+                    add_tasklist_btn.click(add_tasklist, inputs=[
+                                        title_input], outputs=output_create_tasklist)
+        with gr.Row():
+            gr.Markdown("# Ajout Task à une Tasklist")     
 
-    def start(self):
-        self.interface.launch()
+        with gr.Row():
+            with gr.Row():
+                tasklist_id_input = gr.Textbox(label="ID de la Liste de Tâches")
+                name_input = gr.Textbox(label="Nom de la tâches")
+                description_input = gr.Textbox(label="Description")
+            with gr.Row():
+                add_task_btn = gr.Button("Ajouter Tâche")
+                output_add_task = gr.Textbox(label="ID de la Tâche", lines=1)
+                add_task_btn.click(add_task, inputs=[
+                            tasklist_id_input, name_input, description_input], outputs=output_add_task)
+
+        with gr.Row():
+            gr.Markdown("# Gestion des Tâches") 
+
+        with gr.Row():
+            tasklist_id_input = gr.Textbox(label="ID de la Liste de Tâches")
+            task_id_input = gr.Textbox(label="ID de la Tâche")
+            complete_task_btn = gr.Button("Marquer Tâche comme Terminée")
+            output_complete_task = gr.Textbox(label="Tâche Terminée", lines=1)
+            complete_task_btn.click(complete_task, inputs=[
+                                            tasklist_id_input, task_id_input], outputs=output_complete_task)
+        with gr.Column():
+            with gr.Row():
+                tasklist_id_input = gr.Textbox(label="ID de la Liste de Tâches")
+                task_id_input = gr.Textbox(label="ID de la Tâche")
+                delete_task_btn = gr.Button("Supprimer Tâche")
+                output_delete_task = gr.Textbox(label="Tâche Supprimée", lines=1)
+                delete_task_btn.click(delete_task, inputs=[
+                                    tasklist_id_input, task_id_input], outputs=output_delete_task)
+        with gr.Row():
+            gr.Markdown("# Affichages des tâches à faire")
+
+        with gr.Row():
+            with gr.Column():
+                tasklist_id_input = gr.Textbox(label="ID de la Liste de Tâches")
+                show_incomplete_tasks_btn = gr.Button("Afficher Tâches en Cours")
+            with gr.Column():
+                task_list_incomplete = gr.Textbox(label="Tasks to do", elem_id="task-list-todo", lines=10)
+                show_incomplete_tasks_btn.click(show_incomplete_tasks, inputs=[
+                                        tasklist_id_input], outputs=task_list_incomplete)
+
+    return app
+
+
+def add_tasklist(title: str):
+    response = TaskController.create_tasklist(title)
+    return response
+
+
+def add_task(tasklist_id: str, name: str, description: str):
+    response = TaskController.add_task_to_tasklist(
+        tasklist_id, name, description)
+    return response
+
+
+def complete_task(tasklist_id: str, task_id: str):
+    response = TaskController.complete_task(tasklist_id, task_id)
+    return response
+
+
+def delete_task(tasklist_id: str, task_id: str):
+    response = TaskController.delete_task(tasklist_id, task_id)
+    return response
+
+
+def show_incomplete_tasks(tasklist_id: str):
+    response = TaskController.get_incomplete_tasks(tasklist_id)
+    return response
