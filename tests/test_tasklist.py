@@ -1,4 +1,3 @@
-import pytest
 from model.task import Task
 from model.tasklist import TaskList
 
