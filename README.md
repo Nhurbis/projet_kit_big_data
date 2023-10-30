@@ -104,3 +104,7 @@ Then, open `docs/_build/html/index.html` in a web browser.
 ## CI/CD
 
 This project is set up with a CI/CD pipeline using GitHub Actions. Any push to the main branch triggers the pipeline, which runs tests, checks code coverage, and deploys the documentation.
+
+## Sécurité
+
+As part of this project, and in order to facilitate the teacher's grading process, the decision was made to leave the database connection string visible in the code (instead of using environment variables). Additionally, we are directly returning the \_id values to facilitate the use of the very simplistic gradio interface. In a real production environment, these choices would not have been made.
