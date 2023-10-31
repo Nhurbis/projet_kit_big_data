@@ -1,9 +1,12 @@
 [tool.poetry]
-name = "y"
-version = "0.1.0"
+name = "PROJET_KIT_BIG_DATA"
+version = "1.0.0"
 description = "ToDo list du projet kit big data"
 authors = ["Guillaume", "Paul", "Aleksander", "Lucas", "Guillaume"]
 readme = "README.md"
+packages = [
+    { include = "../" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.13"
