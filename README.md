@@ -78,9 +78,9 @@ Example Usage:
 
 ```bash
 python task_manager_cli.py create_tasklist "My Task List"
-python task_manager_cli.py add_task 1 "Go Shopping" "Buy milk, eggs, and bread"
-python task_manager_cli.py complete_task 1 1
-python task_manager_cli.py show_incomplete_tasks 1
+python task_manager_cli.py add_task <tasklist_id> "Go Shopping" "Buy milk, eggs, and bread"
+python task_manager_cli.py complete_task <tasklist_id> 1
+python task_manager_cli.py show_incomplete_tasks <tasklist_id>
 ```
 
 ## Testing
