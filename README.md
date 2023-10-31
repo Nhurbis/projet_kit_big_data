@@ -40,7 +40,7 @@ These instructions will get the project up and running on your local machine for
    docker run -it -p 7860:7860 les_meures
    ```
 
-3. Access the application in your web browser at: http://0.0.0.0:7860/
+3. Access the application in your web browser at: http://localhost:7860
 
 #### Using Poetry
 
@@ -54,7 +54,9 @@ These instructions will get the project up and running on your local machine for
 2. Set up a virtual environment and install dependencies:
    ```bash
    poetry install
+   poetry run python main.py
    ```
+3. Access the application in your web browser at: http://localhost:7860
 
 ### Task Manager CLI
 
