@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch, MagicMock
 from controller.task_controller import TaskController
 from model.tasklist import TaskList
 from model.task import Task

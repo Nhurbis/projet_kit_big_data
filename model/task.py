@@ -1,3 +1,4 @@
+"""Module to define the Task class."""
 from datetime import datetime
 from typing import Optional, Dict
 import uuid
@@ -71,4 +72,10 @@ class Task:
         return cls(name, description, completed, created_at, _id)
 
     def __str__(self):
+        """Convert Task object to string.
+
+        Returns:
+            str: String representation of the Task instance.
+
+        """
         return f"{self.name}: {self.description} (Complétée: {'Oui' if self.completed else 'Non'})"

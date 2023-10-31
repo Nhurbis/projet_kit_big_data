@@ -1,3 +1,4 @@
+"""This module contains the TaskList class."""
 from typing import List, Optional, Dict
 from config.db_config import db
 import uuid

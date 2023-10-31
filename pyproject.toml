@@ -1,19 +1,20 @@
 [tool.poetry]
-name = "project-big-data"
+name = "y"
 version = "0.1.0"
 description = "ToDo list du projet kit big data"
 authors = ["Guillaume", "Paul", "Aleksander", "Lucas", "Guillaume"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">=3.9,<3.13"
 datetime = "^5.2"
+uuid = "^1.30"
 pymongo = "^4.5.0"
-gradio = "^3.50.2"
-pytest = "^7.4.3"
-pytest-cov = "^4.1.0"
 sphinx = "^7.2.6"
+pytest = "^7.4.3"
 mongomock = "^4.1.2"
+numpy = "^1.26.1"
+gradio = "^3.50.2"
 argparse = "^1.4.0"
 
 

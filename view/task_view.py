@@ -1,3 +1,4 @@
+""" Module to generate the Gradio interface."""
 import gradio as gr
 from controller.task_controller import TaskController
 
