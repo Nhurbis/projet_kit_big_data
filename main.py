@@ -7,7 +7,7 @@ if __name__ == "__main__":
     iface = create_gradio_interface()
     try:
         """ Lance l'application
-        L'application tourne tant que l'utilisateur n'appuie pas sur une touche 
+        L'application tourne tant que l'utilisateur n'appuie pas sur une touche
         du clavier ou effectue un Ctrl+C dans le terminal """
         iface.launch(
             server_name="0.0.0.0", inbrowser=True, prevent_thread_lock=True)
