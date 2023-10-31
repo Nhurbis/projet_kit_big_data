@@ -1,12 +1,13 @@
 """ Purpose: Main entry point for the application."""
 from view.task_view import create_gradio_interface
-from utils.loggers import debug_logger,errors_logger
+from utils.loggers import debug_logger, errors_logger
 
 
 if __name__ == "__main__":
     iface = create_gradio_interface()
     try:
-        iface.launch(server_name="0.0.0.0",inbrowser=True,prevent_thread_lock=True)
+        iface.launch(
+            server_name="0.0.0.0",inbrowser=True,prevent_thread_lock=True)
         print("Access the application at http://localhost:7860/")
         input("Press Enter to exit...")
         print("The application was closed by the user.")
