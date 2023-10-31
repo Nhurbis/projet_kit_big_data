@@ -7,7 +7,7 @@ if __name__ == "__main__":
     iface = create_gradio_interface()
     try:
         iface.launch(
-            server_name="0.0.0.0",inbrowser=True,prevent_thread_lock=True)
+            server_name="0.0.0.0", inbrowser=True, prevent_thread_lock=True)
         print("Access the application at http://localhost:7860/")
         input("Press Enter to exit...")
         print("The application was closed by the user.")
